@@ -16,7 +16,7 @@ const RoutineList = ({ routines, onEdit, onDelete }) => {
               onClick={() => onEdit(r)}
               aria-label={`Editar ${r.actividad}`}
             >
-              ✏️
+              
             </button>
             <button
               className="btn btn-sm btn-outline-danger"
@@ -27,7 +27,7 @@ const RoutineList = ({ routines, onEdit, onDelete }) => {
               }}
               aria-label={`Eliminar ${r.actividad}`}
             >
-              🗑️
+            
             </button>
           </div>
         </div>
