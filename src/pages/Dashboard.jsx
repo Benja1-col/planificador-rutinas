@@ -15,12 +15,10 @@ const Dashboard = () => {
   const [routines, setRoutines] = useState([]);
   const [editId, setEditId] = useState(null);
 
-  // Cargar rutinas desde Local Storage al iniciar
   useEffect(() => {
     setRoutines(getRoutines());
   }, []);
 
-  // Guardar rutinas en Local Storage cada vez que cambian
   useEffect(() => {
     saveRoutines(routines);
   }, [routines]);
@@ -33,7 +31,6 @@ const Dashboard = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!formData.actividad || !formData.dia || !formData.hora) return;
-
     if (editId) {
       setRoutines(prev => prev.map(r => r.id === editId ? { ...r, ...formData } : r));
       setEditId(null);
