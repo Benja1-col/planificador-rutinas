@@ -1,7 +1,10 @@
-import React, { useState } from 'react';
-import NavBar from '../components/NavBar';  // Si tienes NavBar, sino comenta esta línea y la que lo usa
+import React, { useState, useEffect } from 'react';
+import NavBar from '../components/NavBar';
 import RoutineForm from '../components/RoutineForm';
 import RoutineList from '../components/RoutineList';
+import EmotionTracker from '../components/EmotionTracker';
+import MotivationalQuote from '../components/MotivationalQuote';
+import { getRoutines, saveRoutines } from '../utils/localStorageHelper';
 
 const Dashboard = () => {
   const [formData, setFormData] = useState({
@@ -9,8 +12,18 @@ const Dashboard = () => {
     dia: '',
     hora: '',
   });
-
   const [routines, setRoutines] = useState([]);
+  const [editId, setEditId] = useState(null);
+
+  // Cargar rutinas desde Local Storage al iniciar
+  useEffect(() => {
+    setRoutines(getRoutines());
+  }, []);
+
+  // Guardar rutinas en Local Storage cada vez que cambian
+  useEffect(() => {
+    saveRoutines(routines);
+  }, [routines]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -19,45 +32,66 @@ const Dashboard = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    // Validación simple: no agregar si alguna campo está vacío
     if (!formData.actividad || !formData.dia || !formData.hora) return;
 
-    const newRoutine = {
-      id: Date.now(), // ID único
-      ...formData,
-    };
-
-    setRoutines(prev => [...prev, newRoutine]);
-
-    // Limpiar formulario
+    if (editId) {
+      setRoutines(prev => prev.map(r => r.id === editId ? { ...r, ...formData } : r));
+      setEditId(null);
+    } else {
+      const newRoutine = {
+        id: Date.now(),
+        ...formData,
+      };
+      setRoutines(prev => [...prev, newRoutine]);
+    }
     setFormData({ actividad: '', dia: '', hora: '' });
   };
 
   const handleEdit = (routine) => {
-    alert(`Función editar para: ${routine.actividad} (a implementar)`);
+    setFormData({ actividad: routine.actividad, dia: routine.dia, hora: routine.hora });
+    setEditId(routine.id);
   };
 
   const handleDelete = (id) => {
     setRoutines(prev => prev.filter(r => r.id !== id));
+    if (editId === id) {
+      setEditId(null);
+      setFormData({ actividad: '', dia: '', hora: '' });
+    }
   };
 
   return (
     <>
       <NavBar />
-      <div className="container mt-4">
-        <h2>Tu Rutina Semanal</h2>
-        <RoutineForm
-          formData={formData}
-          handleChange={handleChange}
-          handleSubmit={handleSubmit}
-        />
-        <hr />
-        <RoutineList
-          routines={routines}
-          onEdit={handleEdit}
-          onDelete={handleDelete}
-        />
+      <div className="container mt-4 dashboard-bg" style={{ position: 'relative', zIndex: 1 }}>
+        <h2 className="fw-bold mb-4 text-center" style={{ color: '#1565c0', letterSpacing: '1px' }}>Planificador Deportivo y de Bienestar</h2>
+        <MotivationalQuote />
+        <div className="row g-4 mt-2">
+          <div className="col-12 col-md-6">
+            <RoutineForm
+              formData={formData}
+              handleChange={handleChange}
+              handleSubmit={handleSubmit}
+            />
+            {editId && (
+              <div className="alert alert-info mt-2 py-2">Editando rutina. <button className="btn btn-sm btn-link text-danger" onClick={() => { setEditId(null); setFormData({ actividad: '', dia: '', hora: '' }); }}>Cancelar</button></div>
+            )}
+            <hr className="my-4 d-md-none" />
+          </div>
+          <div className="col-12 col-md-6">
+            <EmotionTracker />
+          </div>
+        </div>
+        <hr className="my-4" />
+        <div className="row justify-content-center">
+          <div className="col-md-8">
+            <RoutineList
+              routines={routines}
+              onEdit={handleEdit}
+              onDelete={handleDelete}
+            />
+          </div>
+        </div>
       </div>
     </>
   );
