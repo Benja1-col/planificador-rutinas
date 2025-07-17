@@ -1,22 +1,21 @@
-/* Fondo personalizado para el panel Dashboard */
 .dashboard-bg {
-  background: url('/images/pexels-marek-piwnicki-3907296-23886059.jpg') no-repeat center center fixed;
+  background: url("https://images.pexels.com/photos/25067987/pexels-photo-25067987.jpeg")
+    no-repeat center center fixed;
   background-size: cover;
   min-height: 100vh;
   border-radius: 18px;
-  box-shadow: 0 4px 32px 0 rgba(21,101,192,0.10);
+  box-shadow: 0 4px 32px 0 rgba(21, 101, 192, 0.1);
 }
-/* Fondo semitransparente para el contenido del panel */
 .dashboard-bg > * {
-  background: rgba(0,30,60,0.80);
+  background: rgba(0, 30, 60, 0.8);
   border-radius: 18px;
   padding: 1.5rem;
 }
-/* Paleta azul y deportivo */
+
 body {
   background: linear-gradient(135deg, #0d47a1 60%, #1976d2 100%) !important;
   min-height: 100vh;
-  font-family: 'Montserrat', 'Segoe UI', Arial, sans-serif;
+  font-family: "Montserrat", "Segoe UI", Arial, sans-serif;
 }
 
 .home-hero {
